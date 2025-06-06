@@ -16,10 +16,57 @@ using namespace std;
 
 // }
 
-// int thingsDoneWell(vector<string> essay){
+float thingsDoneWell(unordered_set<string> essaySet){
 
-// }
+    fstream file;
+    string word, filename;
+    vector<string> conjunctions;
+    vector<string> goodVocab;
+    float goodWordCount = 0;
 
+    filename = "conjunctions.txt";
+    file.open(filename.c_str());
+
+    if (!file.is_open()){
+        cerr << "There was a failure opening conjunctions.txt. Please include download this file if not downloaded already" << endl;
+        return -1;
+    }
+
+    while(file >> word){
+        conjunctions.push_back(word);
+    }
+    file.close();
+
+    unordered_set<string> conjunctionsSet(conjunctions.begin(), conjunctions.end());
+
+    filename = "good_vocab.txt";
+    file.open(filename.c_str());
+
+    if (!file.is_open()){
+        cerr << "There was a failure opening good_vocab.txt. Please include download this file if not downloaded already" << endl;
+        return -1;
+    }
+
+    while (file >> word){
+        goodVocab.push_back(word);
+    }
+    file.close();
+
+    unordered_set<string> goodVocabSet(goodVocab.begin(), goodVocab.end());
+
+    for (auto it = begin(essaySet); it != end(essaySet); ++it){
+        if (conjunctionsSet.find(*it) != conjunctionsSet.end()){
+            goodWordCount += 1.5;
+            cout << *it << endl;
+        }
+        if (goodVocabSet.find(*it) != goodVocabSet.end()){
+            goodWordCount += 1;
+            cout << *it << endl;
+        }
+    }
+
+    return goodWordCount;
+}
 
 int spellCheck(unordered_set<string> essaySet){
 
@@ -39,6 +86,7 @@ int spellCheck(unordered_set<string> essaySet){
     while (file >> word){
         dictionary.push_back(word);
     }
+    file.close();
 
     unordered_set<string> dictionarySet(dictionary.begin(), dictionary.end());
 
@@ -52,7 +100,7 @@ int spellCheck(unordered_set<string> essaySet){
     return numMispelled;
 }
 
-int wordOveruse(vector<string> essay){
+int wordOveruse(vector<string> essay, map<string, int> wordCount){
 
     int count = 0;
     vector<string> commonWords;
@@ -72,12 +120,6 @@ int wordOveruse(vector<string> essay){
         commonWords.push_back(word);
     }  
     cwFile.close();
-
-    map<string, int> wordCount;
-
-    for (const auto& word : essay){
-        wordCount[word]++;
-    }
 
     unordered_set<string> commonWordsSet(commonWords.begin(), commonWords.end());
 
@@ -115,7 +157,6 @@ int wordCount(vector<string> essay){
 
 // }
 
-
 vector<string> cleanWords(string essay){
 
     stringstream ss(essay);
@@ -139,12 +180,20 @@ int main () {
     vector<string> essayCleaned = cleanWords(essay);
     unordered_set<string> essaySet(essayCleaned.begin(), essayCleaned.end());
 
-    //cout << "you entered: " << essayCleaned[2] << endl;
-    int count = wordOveruse(essayCleaned);
+    map<string, int> wordCounter;
+
+    for (const auto& word : essayCleaned){
+        wordCounter[word]++;
+    }
+
+    int count = wordOveruse(essayCleaned, wordCounter);
     cout << count << endl;
 
     int countSpelling = spellCheck(essaySet);
     cout << "Num spelling mistakes: " << countSpelling << endl;
+
+    float countWell = thingsDoneWell(essaySet);
+    cout << "Num done well = " << countWell << endl;
 
     return 0;
 }
