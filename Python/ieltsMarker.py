@@ -251,7 +251,7 @@ def ieltsScore(numWords_value, num_misspelled, overuse_score, structure_score, g
         score = 6.5
         print('You wrote too much. More is not better. Please try to write only 250 - 300 words in the future.')
         
-    elif num_misspelled >= 2 and num_misspelled <= 3:
+    if num_misspelled >= 2 and num_misspelled <= 3:
         score -= 0.25
         
     elif num_misspelled > 3 and num_misspelled < 6:
@@ -280,7 +280,7 @@ def ieltsScore(numWords_value, num_misspelled, overuse_score, structure_score, g
     if good_num >= 5 and good_num <= 6:
         score += 0.25
     
-    elif good_num == 6 or good_num == 7:
+    elif good_num > 6 or good_num <= 7:
         score += 0.5
         
     elif good_num > 7:
