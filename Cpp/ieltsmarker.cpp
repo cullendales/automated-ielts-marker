@@ -10,6 +10,7 @@
 
 using namespace std;
 
+// checks how many paragraphs are in the ielts paper
 int structure(const string& essay){
 
     stringstream ss(essay);
@@ -41,6 +42,7 @@ int structure(const string& essay){
     return paraCount;
 }
 
+// better word choice (very smth ie sad - morose,; very bad - terrible)
 int wordChoice(const vector<string>& essay){
 
     int count = 0;
@@ -112,6 +114,7 @@ int wordChoice(const vector<string>& essay){
     for (auto it = begin(essay); it != end(essay); ++it){
         if (*it == "very"){
             ++it;
+            // checks to see if word found has 'very' in front and if so, then chooses the 'very' list for word correction and checks
             if (veryWords.find(*it) != veryWords.end()){
                 count++;
                 cout << "You used the word: \"Very " << *it << "\" - some better choices are: ";
@@ -134,6 +137,7 @@ int wordChoice(const vector<string>& essay){
     return count;
 }
 
+// things done well (ie conjunctions, good amount of sentences)
 float thingsDoneWell(const unordered_set<string>& essaySet){
 
     fstream file;
@@ -184,6 +188,7 @@ float thingsDoneWell(const unordered_set<string>& essaySet){
     return goodWordCount;
 }
 
+// list number of incorrect words spelt
 int spellCheck(const unordered_set<string>& essaySet){
 
     fstream file;
@@ -207,15 +212,20 @@ int spellCheck(const unordered_set<string>& essaySet){
     unordered_set<string> dictionarySet(dictionary.begin(), dictionary.end());
 
     for (auto it = begin(essaySet); it != end(essaySet); ++it){
-        if (dictionarySet.find(*it) == dictionarySet.end()){        
-            numMispelled++;
-            cout << "The word " << *it << " is likely mispelled." << endl;
+        string word = *it;
+        bool hasApostrophe = false;
+        if (dictionarySet.find(*it) == dictionarySet.end()){   
+            if (word.find('\'') == string::npos && word.find("’") == string::npos) {
+                numMispelled++;
+                cout << "The word " << word << " is likely mispelled." << endl;
+            }
         }
     }
 
     return numMispelled;
 }
 
+// checks to see if a word is overused
 int wordOveruse(vector<string> essay, map<string, int> wordCount){
 
     int count = 0;
@@ -258,6 +268,7 @@ int wordOveruse(vector<string> essay, map<string, int> wordCount){
     return count;
 }
 
+// determines wordcount and impact on mark from this value
 int wordCount(const vector<string>& essay){
 
     int count = 0;
@@ -269,7 +280,8 @@ int wordCount(const vector<string>& essay){
     return count;
 }
 
-int ieltsScore(int numWordsValue, int numMisspelled, int overuseScore, int structureScore, int goodNum, int scoreWc){
+// tallies up final ielts score using values obtained from other methods
+float ieltsScore(int numWordsValue, int numMisspelled, int overuseScore, int structureScore, int goodNum, int scoreWc){
 
     float score = 0;
 
@@ -281,7 +293,7 @@ int ieltsScore(int numWordsValue, int numMisspelled, int overuseScore, int struc
         score = 6;
         cout << "You almost wrote enough. Please write more in the future. You must write a minimum of 250 words." << endl;
     }
-    else if (numWordsValue == 6){
+    else if (numWordsValue == 5){
         score = 6.75;
     }
     else { 
@@ -293,11 +305,11 @@ int ieltsScore(int numWordsValue, int numMisspelled, int overuseScore, int struc
 
     else if (numMisspelled > 3 && numMisspelled < 6){
         score -= 0.5;
-        cout << "You made " << numMisspelled << "spelling mistakes. Please check your spelling more carefully after finishing your essay." << endl;
+        cout << "You made " << numMisspelled << " spelling mistakes. Please check your spelling more carefully after finishing your essay." << endl;
     }
     else if (numMisspelled > 6){
         score -= 1;
-        cout << "You made " << numMisspelled << "spelling mistakes. Please check your spelling more carefully after finishing your essay." << endl;
+        cout << "You made " << numMisspelled << " spelling mistakes. Please check your spelling more carefully after finishing your essay." << endl;
     }
 
     if (overuseScore == 2){
@@ -320,7 +332,7 @@ int ieltsScore(int numWordsValue, int numMisspelled, int overuseScore, int struc
     if (goodNum >= 5 && goodNum <= 6){
         score += 0.25;
     }
-    else if (goodNum > 6 or goodNum <= 7){
+    else if (goodNum > 6 && goodNum <= 7){
         score += 0.5;
     }
     else if (goodNum > 7) {
@@ -338,6 +350,7 @@ int ieltsScore(int numWordsValue, int numMisspelled, int overuseScore, int struc
     return score;
 }
 
+// cleans the essay into lowercase and removes punctuation and counts wordcount
 pair<vector<string>, int> cleanWords(const string& essay){
 
     stringstream ss(essay);
@@ -381,9 +394,10 @@ int main () {
         essay += line + "\n";
     }
 
+    // calls function to clean eassy into string vector for future methods
     auto cleanRes = cleanWords(essay);
     vector<string> essayCleaned = cleanRes.first;
-    int paraCount = cleanRes.second;
+    int structureScore = cleanRes.second;
 
     unordered_set<string> essaySet(essayCleaned.begin(), essayCleaned.end());
 
@@ -393,20 +407,31 @@ int main () {
         wordCounter[word]++;
     }
 
-    int numWords = wordCount(essayCleaned);
-    cout << "num words: " << numWords << endl;
+    // call methods to get scores for each section of the paper
+    int numWordsValue = wordCount(essayCleaned);
+    int overuseScore = wordOveruse(essayCleaned, wordCounter);
+    int numMisspelled = spellCheck(essaySet);
+    float goodNum = thingsDoneWell(essaySet);
+    int scoreWc = wordChoice(essayCleaned);
 
-    int count = wordOveruse(essayCleaned, wordCounter);
-    cout << count << endl;
+    // tally up final score using the scores obtained from the functions
+    float finalScore = ieltsScore(numWordsValue, numMisspelled, overuseScore, structureScore, goodNum, scoreWc);
 
-    int countSpelling = spellCheck(essaySet);
-    cout << "Num spelling mistakes: " << countSpelling << endl;
+    cout << "fs: " << finalScore << endl;
 
-    float countWell = thingsDoneWell(essaySet);
-    cout << "Num done well = " << countWell << endl;
+    int middleScore = 25;
+    int upperMiddle = 75;
 
-    int badCount = wordChoice(essayCleaned);
-    cout << "num bad: " << badCount << endl;
+    // checks to see if score is in between two ielts scores and outputs that range
+    string strScore = to_string(finalScore);
+    string strMiddle = to_string(middleScore);
+    string strUpperMiddle = to_string(upperMiddle);
+
+    if (strScore.find(strMiddle) != string::npos || strScore.find(strUpperMiddle) != string::npos) {
+        cout << "Your IELTS score is: " << finalScore - 0.25 << " - " << finalScore + 0.25 << endl;
+    } else {
+        cout << "Your IELTS score is: " << finalScore << endl;
+    }
 
     return 0;
 }

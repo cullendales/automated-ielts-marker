@@ -280,7 +280,7 @@ def ieltsScore(numWords_value, num_misspelled, overuse_score, structure_score, g
     if good_num >= 5 and good_num <= 6:
         score += 0.25
     
-    elif good_num > 6 or good_num <= 7:
+    elif good_num > 6 and good_num <= 7:
         score += 0.5
         
     elif good_num > 7:
