@@ -24,5 +24,5 @@ A program which can mark the task 2 writing of the IELTS written test automatica
 
 ## Notes
 
-This program received a 95% success rate at matching 20 professionally marked IELTS task 2 papers from 5 different students with marks ranging from 5.5 - 8.5 out of 9. However, the marks given by this program are to give you a general idea of your IELTS score and are not interchangeable with those of a real examiner - especially for marks lower than a 6 or higher than an 8. If your paper is written well but off-topic, this program will overscore it. Enjoy the program but please be aware of possible overscoring. Best of luck on your IELTS examination :)
+This program received a 95% success rate at matching 20 professionally marked IELTS task 2 papers from 5 different students with marks ranging from 5.5 - 8.5 out of 9. However, the marks given by this program are to give you a general idea of your IELTS score and are not interchangeable with those of a real examiner - especially for marks lower than a 6 or higher than an 8. If your paper is written well but off-topic, this program will overscore it. Enjoy the program but please be aware of possible overscoring. Best of luck on your IELTS examination!
 
