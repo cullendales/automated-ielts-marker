@@ -9,12 +9,12 @@ A program which can mark the IELTS written test automatically. Many students stu
 2. Ensure all .txt files are downloaded for the C++ version.
 
 ## Usage
-###Python
+#### Python
 1. Run the program using the test IELTS paper included in the python folder or your own docx file.
 2. Include the docx file in the command line.
 3. Read the feedback offered by the program and make changes to your paper before running it again to see how correcting minor mistakes can improve your mark a ton.
 
-###C++
+#### C++
 1. Run the program using the test IELTS paper included in the cpp folder or your own .txt file - with a space between paragraphs.
 2. Ensure all .txt files included in the cpp folder have been downloaded.
 3. Run the program and when prompted type the name of your .txt with the .txt ending.
