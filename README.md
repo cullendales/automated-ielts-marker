@@ -5,7 +5,9 @@ A program which can mark the IELTS written test automatically. Many students stu
 
 ## Getting Started
 1. Clone the repo
+```sh
    git clone https://github.com/cullendales/automated-ielts-marker
+```
 2. Ensure all .txt files are downloaded for the C++ version.
 
 ## Usage
